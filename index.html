@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Guess the Word Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        p {
+            color: #666;
+        }
+
+        #word-display {
+            font-size: 24px;
+            margin-top: 20px;
+        }
+
+        #remaining-guesses {
+            font-size: 18px;
+            color: #FF5733;
+        }
+
+        #guessed-letters {
+            font-size: 18px;
+            color: #333;
+        }
+
+        input[type="text"] {
+            padding: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Guess the Word Game</h1>
+    <p>Guess the word by entering a letter:</p>
+    <div id="word-display"></div>
+    <p>Remaining guesses: <span id="remaining-guesses">10</span></p>
+    <p>Already guessed letters: <span id="guessed-letters"></span></p>
+    <input type="text" id="guess-input">
+    <button onclick="guessLetter()">Guess</button>
+
+    <script>
+        // Define an array of words to guess
+        const words = ["apple", "banana", "cherry", "grape", "orange" ,"mango", "pineapple"];
+
+        // Choose a random word from the array
+        let word = words[Math.floor(Math.random() * words.length)];
+
+        // Initialize variables
+        let remainingGuesses = 10;
+        let guessedLetters = [];
+        let wordDisplay = [];
+
+        // Initialize the word display with underscores
+        for (let i = 0; i < word.length; i++) {
+            wordDisplay.push("_");
+        }
+        document.getElementById("word-display").textContent = wordDisplay.join(" ");
+
+        function guessLetter() {
+            // Get the user's guess from the input field
+            let guess = document.getElementById("guess-input").value.toLowerCase();
+
+            // Check if the input is a single letter
+            if (/^[a-zA-Z]$/.test(guess)) {
+                // Check if the letter has already been guessed
+                if (guessedLetters.includes(guess)) {
+                    alert("You've already guessed that letter!");
+                } else {
+                    // Add the guessed letter to the list
+                    guessedLetters.push(guess);
+                    document.getElementById("guessed-letters").textContent = guessedLetters.join(", ");
+
+                    // Check if the guess is in the word
+                    if (word.includes(guess)) {
+                        // Update the word display with the correctly guessed letter(s)
+                        for (let i = 0; i < word.length; i++) {
+                            if (word[i] === guess) {
+                                wordDisplay[i] = guess;
+                            }
+                        }
+                        document.getElementById("word-display").textContent = wordDisplay.join(" ");
+
+                        // Check if the player has won
+                        if (!wordDisplay.includes("_")) {
+                            alert("Congratulations! You've guessed the word: " + word);
+                            resetGame();
+                        }
+                    } else {
+                        // Decrement remaining guesses and update the display
+                        remainingGuesses--;
+                        document.getElementById("remaining-guesses").textContent = remainingGuesses;
+
+                        // Check if the player has run out of guesses
+                        if (remainingGuesses === 0) {
+                            alert("Game over. The word was: " + word);
+                            resetGame();
+                        }
+                    }
+                }
+            } else {
+                alert("Please enter a single alphabetic character.");
+            }
+
+            // Clear the input field
+            document.getElementById("guess-input").value = "";
+        }
+
+        function resetGame() {
+            // Choose a new random word
+            word = words[Math.floor(Math.random() * words.length)];
+
+            // Reset variables
+            remainingGuesses = 10;
+            guessedLetters = [];
+            wordDisplay = [];
+            for (let i = 0; i < word.length; i++) {
+                wordDisplay.push("_");
+            }
+
+            // Update the displays
+            document.getElementById("word-display").textContent = wordDisplay.join(" ");
+            document.getElementById("remaining-guesses").textContent = remainingGuesses;
+            document.getElementById("guessed-letters").textContent = "";
+
+            // Clear the input field
+            document.getElementById("guess-input").value = "";
+        }
+    </script>
+</body>
+</html>
